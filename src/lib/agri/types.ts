@@ -7,10 +7,10 @@ export type Impact = "low" | "medium" | "high";
 export interface Good {
   id: string;
   name: string;
-  category?: string;
+  category?: string | undefined;
   unit: string;
-  grade?: string;
-  marketLocation?: string;
+  grade?: string | undefined;
+  marketLocation?: string | undefined;
   currency: string;
   archived: boolean;
   createdAt: string;
@@ -21,14 +21,14 @@ export interface PriceEntry {
   goodId: string;
   date: string;
   close: number;
-  open?: number;
-  high?: number;
-  low?: number;
+  open?: number | undefined;
+  high?: number | undefined;
+  low?: number | undefined;
   supply: SupplyLevel;
   demand: DemandLevel;
-  stockLevel?: StockLevel;
-  volumeEstimate?: number;
-  source?: string;
+  stockLevel?: StockLevel | undefined;
+  volumeEstimate?: number | undefined;
+  source?: string | undefined;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,7 +37,7 @@ export interface Note {
   id: string;
   goodId: string;
   date: string;
-  priceId?: string;
+  priceId?: string | undefined;
   direction: Direction;
   reasonTag: string;
   text: string;
@@ -52,7 +52,7 @@ export interface SeasonProfile {
   harvestMonths: number[];
   peakSupplyMonths: number[];
   leanMonths: number[];
-  notes?: string;
+  notes?: string | undefined;
 }
 
 export interface AgriDatabase {
