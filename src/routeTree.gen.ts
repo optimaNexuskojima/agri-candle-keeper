@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GoodsIndexRouteImport } from './routes/goods.index'
+import { Route as GoodsGoodIdRouteImport } from './routes/goods.$goodId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +23,39 @@ const GoodsIndexRoute = GoodsIndexRouteImport.update({
   path: '/goods/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GoodsGoodIdRoute = GoodsGoodIdRouteImport.update({
+  id: '/goods/$goodId',
+  path: '/goods/$goodId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/goods/$goodId': typeof GoodsGoodIdRoute
   '/goods/': typeof GoodsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/goods/$goodId': typeof GoodsGoodIdRoute
   '/goods': typeof GoodsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/goods/$goodId': typeof GoodsGoodIdRoute
   '/goods/': typeof GoodsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/goods/'
+  fullPaths: '/' | '/goods/$goodId' | '/goods/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/goods'
-  id: '__root__' | '/' | '/goods/'
+  to: '/' | '/goods/$goodId' | '/goods'
+  id: '__root__' | '/' | '/goods/$goodId' | '/goods/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GoodsGoodIdRoute: typeof GoodsGoodIdRoute
   GoodsIndexRoute: typeof GoodsIndexRoute
 }
 
@@ -65,11 +75,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GoodsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/goods/$goodId': {
+      id: '/goods/$goodId'
+      path: '/goods/$goodId'
+      fullPath: '/goods/$goodId'
+      preLoaderRoute: typeof GoodsGoodIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GoodsGoodIdRoute: GoodsGoodIdRoute,
   GoodsIndexRoute: GoodsIndexRoute,
 }
 export const routeTree = rootRouteImport
