@@ -11,7 +11,7 @@ function Pill({ className, children }: { className?: string; children: React.Rea
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap",
+        "inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap",
         className,
       )}
     >
@@ -25,10 +25,10 @@ export function SupplyBadge({ value }: { value: SupplyLevel }) {
     <Pill
       className={
         value === "low"
-          ? "bg-danger/10 text-danger"
+          ? "bg-danger/12 text-danger"
           : value === "high"
-            ? "bg-primary/10 text-primary"
-            : "bg-muted text-muted-foreground"
+            ? "bg-success/12 text-success"
+            : "bg-elevated text-muted-foreground"
       }
     >
       {SUPPLY_LABELS[value]}
@@ -41,10 +41,10 @@ export function DemandBadge({ value }: { value: DemandLevel }) {
     <Pill
       className={
         value === "high"
-          ? "bg-primary/10 text-primary"
+          ? "bg-success/12 text-success"
           : value === "low"
-            ? "bg-danger/10 text-danger"
-            : "bg-muted text-muted-foreground"
+            ? "bg-danger/12 text-danger"
+            : "bg-elevated text-muted-foreground"
       }
     >
       {DEMAND_LABELS[value]}
@@ -60,10 +60,10 @@ export function PressureBadge({ label }: { label: PressureLabel | null }) {
     <Pill
       className={
         buying
-          ? "bg-primary/12 text-primary"
+          ? "bg-success/12 text-success"
           : selling
             ? "bg-danger/12 text-danger"
-            : "bg-muted text-muted-foreground"
+            : "bg-elevated text-muted-foreground"
       }
     >
       {label}
@@ -73,13 +73,13 @@ export function PressureBadge({ label }: { label: PressureLabel | null }) {
 
 export function SeasonBadge({ status }: { status: SeasonStatus }) {
   const tone: Record<SeasonStatus, string> = {
-    Harvesting: "bg-harvest/20 text-harvest",
-    "Peak Supply": "bg-peak-supply/20 text-peak-supply",
-    "Lean Supply": "bg-lean/20 text-lean",
-    Planting: "bg-planting/15 text-planting",
-    Growing: "bg-growing/25 text-lean",
-    "Off Season": "bg-muted text-muted-foreground",
-    "No Season Data": "bg-muted text-muted-foreground",
+    Harvesting: "bg-warning/15 text-warning",
+    "Peak Supply": "bg-warning/15 text-warning",
+    "Lean Supply": "bg-danger/12 text-danger",
+    Planting: "bg-primary/15 text-primary",
+    Growing: "bg-success/12 text-success",
+    "Off Season": "bg-elevated text-muted-foreground",
+    "No Season Data": "bg-elevated text-muted-foreground",
   };
   return <Pill className={tone[status]}>{status}</Pill>;
 }
@@ -92,7 +92,7 @@ export function ChangeText({ value }: { value: number | null }) {
     <span
       className={cn(
         "font-semibold tabular-nums",
-        value > 0 ? "text-primary" : value < 0 ? "text-danger" : "text-muted-foreground",
+        value > 0 ? "text-success" : value < 0 ? "text-danger" : "text-muted-foreground",
       )}
     >
       {sign}
