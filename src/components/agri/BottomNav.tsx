@@ -11,14 +11,14 @@ const ITEMS = [
 
 export function BottomNav() {
   return (
-    <nav className="bg-card/95 safe-bottom fixed inset-x-0 bottom-0 z-40 border-t pt-1 backdrop-blur">
+    <nav className="border-border bg-background/95 safe-bottom fixed inset-x-0 bottom-0 z-40 border-t pt-1 backdrop-blur">
       <ul className="mx-auto flex max-w-3xl">
         {ITEMS.map((item) => (
           <li key={item.to} className="flex-1">
             <Link
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
-              className="text-muted-foreground flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-medium"
+              className="text-muted-foreground flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-semibold tracking-wide uppercase"
               activeProps={{ className: "text-primary" }}
             >
               <item.icon className="size-5" />
