@@ -114,24 +114,29 @@ function GoodDetailPage() {
         <ArrowLeft className="size-4" /> Goods
       </Link>
 
-      <div className="ios-card space-y-3 p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="truncate text-xl font-bold">{good.name}</h1>
-            <p className="text-muted-foreground text-xs">
+      <div className="pm-card space-y-4 p-4">
+        <div className="flex items-start gap-3">
+          <GoodIcon name={good.name} />
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-lg font-bold">{good.name}</h1>
+            <p className="text-muted-foreground truncate text-xs">
               {good.category ?? "Uncategorised"} · per {good.unit} · {good.currency}
               {good.marketLocation ? ` · ${good.marketLocation}` : ""}
             </p>
           </div>
-          <div className="text-right">
-            <p className="text-lg font-bold tabular-nums">
-              {formatPrice(stats.latest?.close, good.currency)}
-            </p>
-            <p className="text-xs">
-              1D <ChangeText value={stats.dailyChange} />
-            </p>
-          </div>
         </div>
+
+        <div>
+          <p className="pm-num text-4xl font-bold tracking-tight">
+            {formatPrice(stats.latest?.close, good.currency)}
+          </p>
+          <p className="mt-1 text-sm">
+            <ChangeText value={stats.dailyChange} />{" "}
+            <span className="text-muted-foreground">today · per {good.unit}</span>
+          </p>
+        </div>
+
+        <PressureGauge score={stats.pressureScore} />
 
         <div className="flex flex-wrap gap-1.5">
           {stats.latest && <SupplyBadge value={stats.latest.supply} />}
@@ -141,19 +146,20 @@ function GoodDetailPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-2 text-center text-xs">
-          <div className="bg-muted/50 rounded-xl py-2">
-            <p className="text-muted-foreground">3D</p>
+          <div className="bg-elevated rounded-xl py-2.5">
+            <p className="pm-label">3D</p>
             <ChangeText value={stats.change3d} />
           </div>
-          <div className="bg-muted/50 rounded-xl py-2">
-            <p className="text-muted-foreground">7D</p>
+          <div className="bg-elevated rounded-xl py-2.5">
+            <p className="pm-label">7D</p>
             <ChangeText value={stats.change7d} />
           </div>
-          <div className="bg-muted/50 rounded-xl py-2">
-            <p className="text-muted-foreground">Pressure</p>
-            <p className="font-semibold tabular-nums">{stats.pressureScore ?? "—"}</p>
+          <div className="bg-elevated rounded-xl py-2.5">
+            <p className="pm-label">Pressure</p>
+            <p className="pm-num font-semibold">{stats.pressureScore ?? "—"}</p>
           </div>
         </div>
+
 
         {alerts.length > 0 && (
           <ul className="space-y-1">
