@@ -68,7 +68,7 @@ function SettingsPage() {
     <div className="space-y-4">
       <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
 
-      <section className="ios-card space-y-2 p-4">
+      <section className="pm-card space-y-2 p-4">
         <p className="font-semibold">Your data</p>
         <p className="text-muted-foreground text-sm">
           {db.goods.length} goods · {db.prices.length} price entries · {db.notes.length} notes
@@ -103,7 +103,7 @@ function SettingsPage() {
         />
       </section>
 
-      <section className="ios-card space-y-2 p-4">
+      <section className="pm-card space-y-2 p-4">
         <p className="font-semibold">Get started quickly</p>
         <Button
           variant="outline"
@@ -124,7 +124,7 @@ function SettingsPage() {
         </Button>
       </section>
 
-      <section className="ios-card space-y-2 p-4">
+      <section className="pm-card space-y-2 p-4">
         <p className="flex items-center gap-2 font-semibold">
           <Share className="size-4" /> Add to Home Screen (iPhone)
         </p>
@@ -136,7 +136,7 @@ function SettingsPage() {
         </ol>
       </section>
 
-      <section className="ios-card space-y-1 p-4">
+      <section className="pm-card space-y-1 p-4">
         <p className="font-semibold">About AgriCandle</p>
         <p className="text-muted-foreground text-sm">
           AgriCandle is a fully offline commodity price tracker for agricultural traders. All goods,

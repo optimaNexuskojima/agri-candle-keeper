@@ -108,7 +108,7 @@ function NotesPage() {
       </div>
 
       {notes.length === 0 ? (
-        <div className="ios-card px-6 py-10 text-center">
+        <div className="pm-card px-6 py-10 text-center">
           <p className="font-semibold">No notes yet</p>
           <p className="text-muted-foreground mt-1 text-sm">
             Write down why prices moved so you can spot the pattern later.
@@ -120,7 +120,7 @@ function NotesPage() {
       ) : (
         <ul className="space-y-3">
           {notes.map((note) => (
-            <li key={note.id} className="ios-card p-3">
+            <li key={note.id} className="pm-card p-3">
               <div className="flex items-start justify-between gap-3">
                 <button
                   type="button"

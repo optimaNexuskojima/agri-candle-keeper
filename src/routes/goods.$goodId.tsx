@@ -33,6 +33,9 @@ import { CandleDetailDialog } from "@/components/agri/CandleDetailDialog";
 import { GoodFormDialog } from "@/components/agri/GoodFormDialog";
 import { NoteFormDialog } from "@/components/agri/NoteFormDialog";
 import { PriceChart, type ChartMode } from "@/components/agri/PriceChart";
+import { GoodIcon } from "@/components/agri/GoodIcon";
+import { PressureGauge } from "@/components/agri/PressureGauge";
+import { cn } from "@/lib/utils";
 import { PriceFormDialog } from "@/components/agri/PriceFormDialog";
 import { SeasonEditor } from "@/components/agri/SeasonEditor";
 import { computeGoodStats, formatPrice, seasonAlerts, sortedPrices } from "@/lib/agri/logic";
@@ -59,10 +62,10 @@ export const Route = createFileRoute("/goods/$goodId")({
 });
 
 const RANGES = [
-  { value: "30", label: "30 days" },
-  { value: "90", label: "90 days" },
-  { value: "180", label: "180 days" },
-  { value: "all", label: "All" },
+  { value: "30", label: "30D" },
+  { value: "90", label: "90D" },
+  { value: "180", label: "180D" },
+  { value: "all", label: "ALL" },
 ];
 
 function GoodDetailPage() {
@@ -93,7 +96,7 @@ function GoodDetailPage() {
 
   if (!good) {
     return (
-      <div className="ios-card px-6 py-10 text-center">
+      <div className="pm-card px-6 py-10 text-center">
         <p className="font-semibold">This good was not found.</p>
         <Link to="/goods" className="text-primary mt-3 inline-block text-sm">
           Back to goods
@@ -164,7 +167,7 @@ function GoodDetailPage() {
         {alerts.length > 0 && (
           <ul className="space-y-1">
             {alerts.map((alert) => (
-              <li key={alert} className="bg-harvest/15 rounded-xl px-3 py-2 text-xs font-medium">
+              <li key={alert} className="bg-warning/12 text-warning rounded-xl px-3 py-2 text-xs font-medium">
                 {alert}
               </li>
             ))}
@@ -251,7 +254,7 @@ function GoodDetailPage() {
           </p>
         </TabsContent>
 
-        <TabsContent value="history" className="ios-card mt-3 p-3">
+        <TabsContent value="history" className="pm-card mt-3 p-3">
           <div className="mb-3 flex items-center justify-between">
             <p className="font-semibold">Price History</p>
             <Button size="sm" onClick={() => setPriceDialog({ open: true })}>
@@ -326,7 +329,7 @@ function GoodDetailPage() {
           )}
         </TabsContent>
 
-        <TabsContent value="notes" className="ios-card mt-3 space-y-3 p-3">
+        <TabsContent value="notes" className="pm-card mt-3 space-y-3 p-3">
           <div className="flex items-center justify-between">
             <p className="font-semibold">Notes</p>
             <Button size="sm" onClick={() => setNoteDialog({ open: true })}>
@@ -350,7 +353,7 @@ function GoodDetailPage() {
           )}
         </TabsContent>
 
-        <TabsContent value="season" className="ios-card mt-3 p-4">
+        <TabsContent value="season" className="pm-card mt-3 p-4">
           <SeasonEditor goodId={good.id} />
         </TabsContent>
       </Tabs>
