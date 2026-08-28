@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Plus, Search } from "lucide-react";
 
@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { GoodFormDialog } from "@/components/agri/GoodFormDialog";
-import { ChangeText, DemandBadge, PressureBadge, SeasonBadge, SupplyBadge } from "@/components/agri/badges";
-import { computeGoodStats, formatPrice } from "@/lib/agri/logic";
+import { DemandBadge, PressureBadge, SupplyBadge } from "@/components/agri/badges";
+import { CommodityCard } from "@/components/agri/CommodityCard";
+import { useFavorites } from "@/lib/agri/favorites";
+import { computeGoodStats, sortedPrices } from "@/lib/agri/logic";
 import { useDb } from "@/lib/agri/store";
 import { EmptyGoods } from "@/components/agri/EmptyGoods";
 
@@ -35,6 +37,7 @@ function GoodsPage() {
   const [search, setSearch] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
   const rows = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -71,7 +74,7 @@ function GoodsPage() {
         />
       </div>
 
-      <div className="ios-card flex items-center justify-between px-4 py-3">
+      <div className="pm-card flex items-center justify-between px-4 py-3">
         <span className="text-sm font-medium">Show archived goods</span>
         <Switch checked={showArchived} onCheckedChange={setShowArchived} />
       </div>
