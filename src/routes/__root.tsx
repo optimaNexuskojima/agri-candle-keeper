@@ -115,7 +115,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -137,13 +137,14 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen pb-24">
-        <header className="bg-card/90 sticky top-0 z-30 border-b backdrop-blur">
-          <div className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
-            <span className="bg-primary/10 text-primary rounded-lg px-2 py-1 text-xs font-bold">
+        <header className="border-border bg-background/90 sticky top-0 z-30 border-b backdrop-blur">
+          <div className="mx-auto flex max-w-3xl items-center gap-2.5 px-4 py-3">
+            <span className="bg-primary text-primary-foreground inline-flex size-8 items-center justify-center rounded-full text-xs font-bold">
               AC
             </span>
-            <span className="font-semibold tracking-tight">AgriCandle</span>
-            <span className="text-muted-foreground ml-auto text-[11px]">Offline · On device</span>
+            <span className="font-bold tracking-tight">AgriCandle</span>
+            <span className="pm-label ml-auto">Offline · On device</span>
+            <ThemeToggle />
           </div>
         </header>
         <main className="mx-auto max-w-3xl px-4 py-4">
@@ -156,3 +157,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
