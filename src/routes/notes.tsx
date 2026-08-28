@@ -35,7 +35,7 @@ export const Route = createFileRoute("/notes")({
 });
 
 function DirectionIcon({ direction }: { direction: Note["direction"] }) {
-  if (direction === "up") return <ArrowUpRight className="text-primary size-4" />;
+  if (direction === "up") return <ArrowUpRight className="text-success size-4" />;
   if (direction === "down") return <ArrowDownRight className="text-danger size-4" />;
   return <Minus className="text-muted-foreground size-4" />;
 }
