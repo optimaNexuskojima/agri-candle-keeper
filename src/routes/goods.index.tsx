@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Plus, Search } from "lucide-react";
 
@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { GoodFormDialog } from "@/components/agri/GoodFormDialog";
-import { ChangeText, DemandBadge, PressureBadge, SeasonBadge, SupplyBadge } from "@/components/agri/badges";
-import { computeGoodStats, formatPrice } from "@/lib/agri/logic";
+import { DemandBadge, PressureBadge, SupplyBadge } from "@/components/agri/badges";
+import { CommodityCard } from "@/components/agri/CommodityCard";
+import { useFavorites } from "@/lib/agri/favorites";
+import { computeGoodStats, sortedPrices } from "@/lib/agri/logic";
 import { useDb } from "@/lib/agri/store";
 import { EmptyGoods } from "@/components/agri/EmptyGoods";
 
@@ -35,6 +37,7 @@ function GoodsPage() {
   const [search, setSearch] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
   const rows = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -71,54 +74,40 @@ function GoodsPage() {
         />
       </div>
 
-      <div className="ios-card flex items-center justify-between px-4 py-3">
+      <div className="pm-card flex items-center justify-between px-4 py-3">
         <span className="text-sm font-medium">Show archived goods</span>
         <Switch checked={showArchived} onCheckedChange={setShowArchived} />
       </div>
 
       <ul className="space-y-3">
         {rows.map((stats) => (
-          <li key={stats.good.id}>
-            <Link
-              to="/goods/$goodId"
-              params={{ goodId: stats.good.id }}
-              className="ios-card block px-4 py-3 active:opacity-70"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate font-semibold">
-                    {stats.good.name}
-                    {stats.good.archived && (
-                      <span className="text-muted-foreground ml-2 text-xs">(archived)</span>
-                    )}
-                  </p>
-                  <p className="text-muted-foreground truncate text-xs">
-                    {stats.good.category ?? "Uncategorised"} · per {stats.good.unit}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold tabular-nums">
-                    {formatPrice(stats.latest?.close, stats.good.currency)}
-                  </p>
-                  <p className="text-xs">
-                    1D <ChangeText value={stats.dailyChange} /> · 7D{" "}
-                    <ChangeText value={stats.change7d} />
-                  </p>
-                </div>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {stats.latest && <SupplyBadge value={stats.latest.supply} />}
-                {stats.latest && <DemandBadge value={stats.latest.demand} />}
-                <PressureBadge label={stats.pressure} />
-                <SeasonBadge status={stats.seasonStatus} />
-              </div>
-            </Link>
+          <li key={stats.good.id} className="space-y-2">
+            <CommodityCard
+              stats={stats}
+              closes={sortedPrices(db.prices, stats.good.id)
+                .slice(-14)
+                .map((entry) => entry.close)}
+              notesCount={db.notes.filter((n) => n.goodId === stats.good.id).length}
+              favorite={isFavorite(stats.good.id)}
+              onToggleFavorite={() => toggleFavorite(stats.good.id)}
+            />
+            <div className="flex flex-wrap gap-1.5 px-1">
+              {stats.latest && <SupplyBadge value={stats.latest.supply} />}
+              {stats.latest && <DemandBadge value={stats.latest.demand} />}
+              <PressureBadge label={stats.pressure} />
+              {stats.good.archived && (
+                <span className="bg-elevated text-muted-foreground rounded-full px-2.5 py-1 text-[11px] font-semibold">
+                  Archived
+                </span>
+              )}
+            </div>
           </li>
         ))}
         {rows.length === 0 && (
           <li className="text-muted-foreground py-8 text-center text-sm">No goods match.</li>
         )}
       </ul>
+
 
       <GoodFormDialog open={formOpen} onOpenChange={setFormOpen} />
     </div>

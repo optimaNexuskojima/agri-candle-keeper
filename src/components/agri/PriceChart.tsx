@@ -105,7 +105,7 @@ export function PriceChart({ entries, noteDates, mode, onSelect }: Props) {
             const previousClose = entries[index - 1]?.close;
             const openValue = entry.open ?? previousClose;
             const bullish = openValue === undefined ? true : entry.close >= openValue;
-            const color = bullish ? "fill-primary stroke-primary" : "fill-danger stroke-danger";
+            const color = bullish ? "fill-success stroke-success" : "fill-danger stroke-danger";
             const hasNote = noteDates.has(entry.date);
             const candleReady =
               useCandles &&
@@ -163,12 +163,12 @@ export function PriceChart({ entries, noteDates, mode, onSelect }: Props) {
                     cx={cx}
                     cy={geometry.y(entry.close)}
                     r={hasNote ? 4 : 2.5}
-                    className={hasNote ? "fill-harvest" : "fill-primary"}
+                    className={hasNote ? "fill-warning" : "fill-primary"}
                   />
                 )}
 
                 {hasNote && (
-                  <circle cx={cx} cy={PADDING_TOP - 8} r={3} className="fill-harvest" />
+                  <circle cx={cx} cy={PADDING_TOP - 8} r={3} className="fill-warning" />
                 )}
 
                 {index % labelStep === 0 && (

@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav } from "@/components/agri/BottomNav";
+import { ThemeToggle } from "@/components/agri/ThemeToggle";
 import { Toaster } from "@/components/ui/sonner";
 import { registerServiceWorker } from "@/lib/pwa";
 
@@ -91,10 +92,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#16a34a" },
+      { name: "theme-color", content: "#0B0D10" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "AgriCandle" },
     ],
     links: [
@@ -115,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -137,13 +138,14 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen pb-24">
-        <header className="bg-card/90 sticky top-0 z-30 border-b backdrop-blur">
-          <div className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
-            <span className="bg-primary/10 text-primary rounded-lg px-2 py-1 text-xs font-bold">
+        <header className="border-border bg-background/90 sticky top-0 z-30 border-b backdrop-blur">
+          <div className="mx-auto flex max-w-3xl items-center gap-2.5 px-4 py-3">
+            <span className="bg-primary text-primary-foreground inline-flex size-8 items-center justify-center rounded-full text-xs font-bold">
               AC
             </span>
-            <span className="font-semibold tracking-tight">AgriCandle</span>
-            <span className="text-muted-foreground ml-auto text-[11px]">Offline · On device</span>
+            <span className="font-bold tracking-tight">AgriCandle</span>
+            <span className="pm-label ml-auto">Offline · On device</span>
+            <ThemeToggle />
           </div>
         </header>
         <main className="mx-auto max-w-3xl px-4 py-4">
@@ -156,3 +158,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+

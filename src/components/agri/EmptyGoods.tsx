@@ -11,7 +11,7 @@ export function EmptyGoods() {
   const [formOpen, setFormOpen] = useState(false);
 
   return (
-    <div className="ios-card mx-auto max-w-md px-6 py-10 text-center">
+    <div className="pm-card mx-auto max-w-md px-6 py-10 text-center">
       <div className="bg-primary/10 text-primary mx-auto flex size-14 items-center justify-center rounded-2xl">
         <Sprout className="size-7" />
       </div>

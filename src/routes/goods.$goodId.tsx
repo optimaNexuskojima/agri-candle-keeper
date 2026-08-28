@@ -33,6 +33,9 @@ import { CandleDetailDialog } from "@/components/agri/CandleDetailDialog";
 import { GoodFormDialog } from "@/components/agri/GoodFormDialog";
 import { NoteFormDialog } from "@/components/agri/NoteFormDialog";
 import { PriceChart, type ChartMode } from "@/components/agri/PriceChart";
+import { GoodIcon } from "@/components/agri/GoodIcon";
+import { PressureGauge } from "@/components/agri/PressureGauge";
+import { cn } from "@/lib/utils";
 import { PriceFormDialog } from "@/components/agri/PriceFormDialog";
 import { SeasonEditor } from "@/components/agri/SeasonEditor";
 import { computeGoodStats, formatPrice, seasonAlerts, sortedPrices } from "@/lib/agri/logic";
@@ -59,10 +62,10 @@ export const Route = createFileRoute("/goods/$goodId")({
 });
 
 const RANGES = [
-  { value: "30", label: "30 days" },
-  { value: "90", label: "90 days" },
-  { value: "180", label: "180 days" },
-  { value: "all", label: "All" },
+  { value: "30", label: "30D" },
+  { value: "90", label: "90D" },
+  { value: "180", label: "180D" },
+  { value: "all", label: "ALL" },
 ];
 
 function GoodDetailPage() {
@@ -93,7 +96,7 @@ function GoodDetailPage() {
 
   if (!good) {
     return (
-      <div className="ios-card px-6 py-10 text-center">
+      <div className="pm-card px-6 py-10 text-center">
         <p className="font-semibold">This good was not found.</p>
         <Link to="/goods" className="text-primary mt-3 inline-block text-sm">
           Back to goods
@@ -114,24 +117,29 @@ function GoodDetailPage() {
         <ArrowLeft className="size-4" /> Goods
       </Link>
 
-      <div className="ios-card space-y-3 p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="truncate text-xl font-bold">{good.name}</h1>
-            <p className="text-muted-foreground text-xs">
+      <div className="pm-card space-y-4 p-4">
+        <div className="flex items-start gap-3">
+          <GoodIcon name={good.name} />
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-lg font-bold">{good.name}</h1>
+            <p className="text-muted-foreground truncate text-xs">
               {good.category ?? "Uncategorised"} · per {good.unit} · {good.currency}
               {good.marketLocation ? ` · ${good.marketLocation}` : ""}
             </p>
           </div>
-          <div className="text-right">
-            <p className="text-lg font-bold tabular-nums">
-              {formatPrice(stats.latest?.close, good.currency)}
-            </p>
-            <p className="text-xs">
-              1D <ChangeText value={stats.dailyChange} />
-            </p>
-          </div>
         </div>
+
+        <div>
+          <p className="pm-num text-4xl font-bold tracking-tight">
+            {formatPrice(stats.latest?.close, good.currency)}
+          </p>
+          <p className="mt-1 text-sm">
+            <ChangeText value={stats.dailyChange} />{" "}
+            <span className="text-muted-foreground">today · per {good.unit}</span>
+          </p>
+        </div>
+
+        <PressureGauge score={stats.pressureScore} />
 
         <div className="flex flex-wrap gap-1.5">
           {stats.latest && <SupplyBadge value={stats.latest.supply} />}
@@ -141,24 +149,25 @@ function GoodDetailPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-2 text-center text-xs">
-          <div className="bg-muted/50 rounded-xl py-2">
-            <p className="text-muted-foreground">3D</p>
+          <div className="bg-elevated rounded-xl py-2.5">
+            <p className="pm-label">3D</p>
             <ChangeText value={stats.change3d} />
           </div>
-          <div className="bg-muted/50 rounded-xl py-2">
-            <p className="text-muted-foreground">7D</p>
+          <div className="bg-elevated rounded-xl py-2.5">
+            <p className="pm-label">7D</p>
             <ChangeText value={stats.change7d} />
           </div>
-          <div className="bg-muted/50 rounded-xl py-2">
-            <p className="text-muted-foreground">Pressure</p>
-            <p className="font-semibold tabular-nums">{stats.pressureScore ?? "—"}</p>
+          <div className="bg-elevated rounded-xl py-2.5">
+            <p className="pm-label">Pressure</p>
+            <p className="pm-num font-semibold">{stats.pressureScore ?? "—"}</p>
           </div>
         </div>
+
 
         {alerts.length > 0 && (
           <ul className="space-y-1">
             {alerts.map((alert) => (
-              <li key={alert} className="bg-harvest/15 rounded-xl px-3 py-2 text-xs font-medium">
+              <li key={alert} className="bg-warning/12 text-warning rounded-xl px-3 py-2 text-xs font-medium">
                 {alert}
               </li>
             ))}
@@ -203,22 +212,27 @@ function GoodDetailPage() {
           <TabsTrigger value="season">Season</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="chart" className="ios-card mt-3 space-y-3 p-3">
-          <div className="flex gap-2">
-            <Select value={range} onValueChange={setRange}>
-              <SelectTrigger className="h-10 flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {RANGES.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <TabsContent value="chart" className="pm-card mt-3 space-y-3 p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="bg-elevated flex flex-1 gap-1 rounded-full p-1">
+              {RANGES.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setRange(option.value)}
+                  className={cn(
+                    "flex-1 rounded-full px-3 py-2 text-xs font-semibold",
+                    range === option.value
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
             <Select value={chartMode} onValueChange={(value) => setChartMode(value as ChartMode)}>
-              <SelectTrigger className="h-10 flex-1">
+              <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -228,6 +242,7 @@ function GoodDetailPage() {
               </SelectContent>
             </Select>
           </div>
+
           <PriceChart
             entries={visibleEntries}
             noteDates={noteDates}
@@ -239,7 +254,7 @@ function GoodDetailPage() {
           </p>
         </TabsContent>
 
-        <TabsContent value="history" className="ios-card mt-3 p-3">
+        <TabsContent value="history" className="pm-card mt-3 p-3">
           <div className="mb-3 flex items-center justify-between">
             <p className="font-semibold">Price History</p>
             <Button size="sm" onClick={() => setPriceDialog({ open: true })}>
@@ -314,7 +329,7 @@ function GoodDetailPage() {
           )}
         </TabsContent>
 
-        <TabsContent value="notes" className="ios-card mt-3 space-y-3 p-3">
+        <TabsContent value="notes" className="pm-card mt-3 space-y-3 p-3">
           <div className="flex items-center justify-between">
             <p className="font-semibold">Notes</p>
             <Button size="sm" onClick={() => setNoteDialog({ open: true })}>
@@ -338,7 +353,7 @@ function GoodDetailPage() {
           )}
         </TabsContent>
 
-        <TabsContent value="season" className="ios-card mt-3 p-4">
+        <TabsContent value="season" className="pm-card mt-3 p-4">
           <SeasonEditor goodId={good.id} />
         </TabsContent>
       </Tabs>

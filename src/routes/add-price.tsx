@@ -53,7 +53,7 @@ function AddPricePage() {
         </Button>
       </div>
 
-      <div className="ios-card p-3">
+      <div className="pm-card p-3">
         <p className="mb-2 font-semibold">Recent Entries</p>
         {recent.length === 0 ? (
           <p className="text-muted-foreground py-6 text-center text-sm">No prices yet.</p>
