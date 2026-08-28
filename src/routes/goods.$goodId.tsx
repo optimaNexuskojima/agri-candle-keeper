@@ -209,22 +209,27 @@ function GoodDetailPage() {
           <TabsTrigger value="season">Season</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="chart" className="ios-card mt-3 space-y-3 p-3">
-          <div className="flex gap-2">
-            <Select value={range} onValueChange={setRange}>
-              <SelectTrigger className="h-10 flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {RANGES.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <TabsContent value="chart" className="pm-card mt-3 space-y-3 p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="bg-elevated flex flex-1 gap-1 rounded-full p-1">
+              {RANGES.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setRange(option.value)}
+                  className={cn(
+                    "flex-1 rounded-full px-3 py-2 text-xs font-semibold",
+                    range === option.value
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
             <Select value={chartMode} onValueChange={(value) => setChartMode(value as ChartMode)}>
-              <SelectTrigger className="h-10 flex-1">
+              <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -234,6 +239,7 @@ function GoodDetailPage() {
               </SelectContent>
             </Select>
           </div>
+
           <PriceChart
             entries={visibleEntries}
             noteDates={noteDates}
