@@ -4,7 +4,18 @@ export type StockLevel = "low" | "normal" | "high";
 export type Direction = "up" | "down" | "neutral";
 export type Impact = "low" | "medium" | "high";
 
-export interface Good {
+/**
+ * Sync bookkeeping carried by every record.
+ * `updatedAt` drives last-write-wins conflict resolution; `deletedAt` marks a
+ * tombstone so deletions propagate between devices instead of resurrecting.
+ */
+export interface SyncMeta {
+  updatedAt?: string | undefined;
+  deletedAt?: string | null | undefined;
+}
+
+
+export interface Good extends SyncMeta {
   id: string;
   name: string;
   category?: string | undefined;
@@ -16,7 +27,7 @@ export interface Good {
   createdAt: string;
 }
 
-export interface PriceEntry {
+export interface PriceEntry extends SyncMeta {
   id: string;
   goodId: string;
   date: string;
@@ -33,7 +44,7 @@ export interface PriceEntry {
   updatedAt: string;
 }
 
-export interface Note {
+export interface Note extends SyncMeta {
   id: string;
   goodId: string;
   date: string;
@@ -45,7 +56,7 @@ export interface Note {
   createdAt: string;
 }
 
-export interface SeasonProfile {
+export interface SeasonProfile extends SyncMeta {
   goodId: string;
   plantingMonths: number[];
   growingMonths: number[];

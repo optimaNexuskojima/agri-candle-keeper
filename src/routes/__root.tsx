@@ -15,6 +15,7 @@ import { BottomNav } from "@/components/agri/BottomNav";
 import { ThemeToggle } from "@/components/agri/ThemeToggle";
 import { Toaster } from "@/components/ui/sonner";
 import { registerServiceWorker } from "@/lib/pwa";
+import { hydrateScope, LOCAL_SCOPE } from "@/lib/agri/store";
 
 function NotFoundComponent() {
   return (
@@ -133,6 +134,8 @@ function RootComponent() {
 
   useEffect(() => {
     registerServiceWorker();
+    // Load the offline cache (and migrate legacy localStorage data) on startup.
+    void hydrateScope(LOCAL_SCOPE);
   }, []);
 
   return (
