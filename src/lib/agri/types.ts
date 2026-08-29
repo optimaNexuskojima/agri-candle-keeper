@@ -4,6 +4,17 @@ export type StockLevel = "low" | "normal" | "high";
 export type Direction = "up" | "down" | "neutral";
 export type Impact = "low" | "medium" | "high";
 
+/**
+ * Sync bookkeeping carried by every record.
+ * `updatedAt` drives last-write-wins conflict resolution; `deletedAt` marks a
+ * tombstone so deletions propagate between devices instead of resurrecting.
+ */
+export interface SyncMeta {
+  updatedAt?: string | undefined;
+  deletedAt?: string | null | undefined;
+}
+
+
 export interface Good {
   id: string;
   name: string;
