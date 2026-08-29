@@ -14,7 +14,195 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      goods: {
+        Row: {
+          archived: boolean
+          category: string | null
+          created_at: string
+          currency: string
+          deleted_at: string | null
+          grade: string | null
+          id: string
+          market_location: string | null
+          name: string
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived?: boolean
+          category?: string | null
+          created_at?: string
+          currency?: string
+          deleted_at?: string | null
+          grade?: string | null
+          id: string
+          market_location?: string | null
+          name: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          archived?: boolean
+          category?: string | null
+          created_at?: string
+          currency?: string
+          deleted_at?: string | null
+          grade?: string | null
+          id?: string
+          market_location?: string | null
+          name?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notes: {
+        Row: {
+          created_at: string
+          date: string
+          deleted_at: string | null
+          direction: string
+          good_id: string
+          id: string
+          impact: string
+          price_id: string | null
+          reason_tag: string
+          text: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          deleted_at?: string | null
+          direction?: string
+          good_id: string
+          id: string
+          impact?: string
+          price_id?: string | null
+          reason_tag?: string
+          text?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          deleted_at?: string | null
+          direction?: string
+          good_id?: string
+          id?: string
+          impact?: string
+          price_id?: string | null
+          reason_tag?: string
+          text?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      price_entries: {
+        Row: {
+          close: number
+          created_at: string
+          date: string
+          deleted_at: string | null
+          demand: string
+          good_id: string
+          high: number | null
+          id: string
+          low: number | null
+          open: number | null
+          source: string | null
+          stock_level: string | null
+          supply: string
+          updated_at: string
+          user_id: string
+          volume_estimate: number | null
+        }
+        Insert: {
+          close: number
+          created_at?: string
+          date: string
+          deleted_at?: string | null
+          demand?: string
+          good_id: string
+          high?: number | null
+          id: string
+          low?: number | null
+          open?: number | null
+          source?: string | null
+          stock_level?: string | null
+          supply?: string
+          updated_at?: string
+          user_id?: string
+          volume_estimate?: number | null
+        }
+        Update: {
+          close?: number
+          created_at?: string
+          date?: string
+          deleted_at?: string | null
+          demand?: string
+          good_id?: string
+          high?: number | null
+          id?: string
+          low?: number | null
+          open?: number | null
+          source?: string | null
+          stock_level?: string | null
+          supply?: string
+          updated_at?: string
+          user_id?: string
+          volume_estimate?: number | null
+        }
+        Relationships: []
+      }
+      season_profiles: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          good_id: string
+          growing_months: number[]
+          harvest_months: number[]
+          lean_months: number[]
+          notes: string | null
+          peak_supply_months: number[]
+          planting_months: number[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          good_id: string
+          growing_months?: number[]
+          harvest_months?: number[]
+          lean_months?: number[]
+          notes?: string | null
+          peak_supply_months?: number[]
+          planting_months?: number[]
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          good_id?: string
+          growing_months?: number[]
+          harvest_months?: number[]
+          lean_months?: number[]
+          notes?: string | null
+          peak_supply_months?: number[]
+          planting_months?: number[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
