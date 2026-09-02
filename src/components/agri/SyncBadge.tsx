@@ -26,7 +26,7 @@ export function SyncBadge({ className }: { className?: string }) {
   const map = {
     loading: { icon: Loader2, text: "Loading", tone: "text-muted-foreground", spin: true },
     syncing: { icon: Loader2, text: "Syncing", tone: "text-primary", spin: true },
-    synced: { icon: Check, text: "Synced", tone: "text-[color:var(--up)]", spin: false },
+    synced: { icon: Check, text: "Synced", tone: "text-up", spin: false },
     offline: { icon: CloudOff, text: "Offline", tone: "text-muted-foreground", spin: false },
     error: { icon: AlertTriangle, text: "Sync error", tone: "text-destructive", spin: false },
     idle: { icon: Check, text: "Ready", tone: "text-muted-foreground", spin: false },
