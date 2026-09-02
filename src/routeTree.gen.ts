@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AddPriceRouteImport } from './routes/add-price'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as GoodsIndexRouteImport } from './routes/goods.index'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const AddPriceRoute = AddPriceRouteImport.update({
   id: '/add-price',
   path: '/add-price',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesRoute = NotesRouteImport.update({
@@ -50,6 +56,7 @@ const GoodsGoodIdRoute = GoodsGoodIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add-price': typeof AddPriceRoute
+  '/auth': typeof AuthRoute
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/goods/$goodId': typeof GoodsGoodIdRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add-price': typeof AddPriceRoute
+  '/auth': typeof AuthRoute
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/goods/$goodId': typeof GoodsGoodIdRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/add-price': typeof AddPriceRoute
+  '/auth': typeof AuthRoute
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/goods/$goodId': typeof GoodsGoodIdRoute
@@ -75,13 +84,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/add-price' | '/notes' | '/settings' | '/goods/$goodId' | '/goods/'
+    | '/'
+    | '/add-price'
+    | '/auth'
+    | '/notes'
+    | '/settings'
+    | '/goods/$goodId'
+    | '/goods/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/add-price' | '/notes' | '/settings' | '/goods/$goodId' | '/goods'
+  to:
+    | '/'
+    | '/add-price'
+    | '/auth'
+    | '/notes'
+    | '/settings'
+    | '/goods/$goodId'
+    | '/goods'
   id:
     | '__root__'
     | '/'
     | '/add-price'
+    | '/auth'
     | '/notes'
     | '/settings'
     | '/goods/$goodId'
@@ -91,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddPriceRoute: typeof AddPriceRoute
+  AuthRoute: typeof AuthRoute
   NotesRoute: typeof NotesRoute
   SettingsRoute: typeof SettingsRoute
   GoodsGoodIdRoute: typeof GoodsGoodIdRoute
@@ -111,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/add-price'
       fullPath: '/add-price'
       preLoaderRoute: typeof AddPriceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notes': {
@@ -147,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddPriceRoute: AddPriceRoute,
+  AuthRoute: AuthRoute,
   NotesRoute: NotesRoute,
   SettingsRoute: SettingsRoute,
   GoodsGoodIdRoute: GoodsGoodIdRoute,
