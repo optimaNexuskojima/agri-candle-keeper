@@ -307,7 +307,6 @@ export async function hydrateScope(target: string): Promise<Snapshot> {
   return loaded;
 }
 
-
 /**
  * Merge signed-out local data into the freshly signed-in account.
  * Idempotent: it runs once per account/device and only adds records whose ids
@@ -389,9 +388,7 @@ export function saveGood(input: Omit<Good, "id" | "createdAt"> & { id?: string }
 export function setGoodArchived(goodId: string, archived: boolean) {
   const at = nowISO();
   mutate((draft) => {
-    draft.goods = draft.goods.map((g) =>
-      g.id === goodId ? { ...g, archived, updatedAt: at } : g,
-    );
+    draft.goods = draft.goods.map((g) => (g.id === goodId ? { ...g, archived, updatedAt: at } : g));
     draft.dirty[dirtyKey("goods", goodId)] = true;
   });
 }

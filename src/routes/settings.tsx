@@ -40,7 +40,6 @@ import { signOutAndReset, useSession } from "@/lib/agri/session";
 import { retrySync } from "@/lib/agri/sync";
 import type { AgriDatabase } from "@/lib/agri/types";
 
-
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
@@ -89,8 +88,8 @@ function AccountSyncCard() {
         </p>
         <p className="text-muted-foreground text-sm">
           You're signed out. Everything you record stays on this device only — nothing leaves your
-          phone or computer. Sign in to keep the same goods, prices, notes and seasons on all of your
-          devices.
+          phone or computer. Sign in to keep the same goods, prices, notes and seasons on all of
+          your devices.
         </p>
         <Button asChild className="h-11 w-full">
           <Link to="/auth">Sign in to sync devices</Link>
@@ -184,7 +183,6 @@ function SettingsPage() {
 
       <AccountSyncCard />
 
-
       <section className="pm-card space-y-2 p-4">
         <p className="font-semibold">Your data</p>
         <p className="text-muted-foreground text-sm">
@@ -232,11 +230,7 @@ function SettingsPage() {
         >
           <Sprout className="size-4" /> Load sample data
         </Button>
-        <Button
-          variant="destructive"
-          className="h-11 w-full"
-          onClick={() => setClearOpen(true)}
-        >
+        <Button variant="destructive" className="h-11 w-full" onClick={() => setClearOpen(true)}>
           <Trash2 className="size-4" /> Clear all data
         </Button>
       </section>
@@ -257,22 +251,24 @@ function SettingsPage() {
         <p className="font-semibold">About AgriCandle</p>
         <p className="text-muted-foreground text-sm">
           AgriCandle is an offline-first commodity price tracker for agricultural traders. Prices,
-          notes and season profiles are always written to this device first, so the app keeps working
-          with no connection and no account. If you sign in, your own records also sync to your
-          private cloud account over an encrypted connection — access rules make sure only you can
-          read or change your rows. No market feeds, no tracking, no paid features.
+          notes and season profiles are always written to this device first, so the app keeps
+          working with no connection and no account. If you sign in, your own records also sync to
+          your private cloud account over an encrypted connection — access rules make sure only you
+          can read or change your rows. No market feeds, no tracking, no paid features.
         </p>
-
       </section>
 
-      <AlertDialog open={Boolean(pendingImport)} onOpenChange={(open) => !open && setPendingImport(null)}>
+      <AlertDialog
+        open={Boolean(pendingImport)}
+        onOpenChange={(open) => !open && setPendingImport(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Replace all current data?</AlertDialogTitle>
             <AlertDialogDescription>
               This backup has {pendingImport?.goods.length ?? 0} goods,{" "}
-              {pendingImport?.prices.length ?? 0} prices and {pendingImport?.notes.length ?? 0} notes.
-              Importing replaces everything currently on this device.
+              {pendingImport?.prices.length ?? 0} prices and {pendingImport?.notes.length ?? 0}{" "}
+              notes. Importing replaces everything currently on this device.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">

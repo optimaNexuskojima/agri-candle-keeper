@@ -18,7 +18,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { registerServiceWorker } from "@/lib/pwa";
 import { initSession } from "@/lib/agri/session";
 
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -142,7 +141,6 @@ function RootComponent() {
     return () => stop();
   }, []);
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen pb-24">
@@ -166,4 +164,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-
