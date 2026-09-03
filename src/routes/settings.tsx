@@ -60,6 +60,104 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
+const SYNC_VIEW = {
+  loading: { icon: Loader2, label: "Loading", tone: "text-muted-foreground", spin: true },
+  syncing: { icon: Loader2, label: "Syncing", tone: "text-primary", spin: true },
+  synced: { icon: Check, label: "Synced", tone: "text-up", spin: false },
+  offline: { icon: CloudOff, label: "Offline", tone: "text-muted-foreground", spin: false },
+  error: { icon: AlertTriangle, label: "Sync error", tone: "text-destructive", spin: false },
+  idle: { icon: Check, label: "Ready", tone: "text-muted-foreground", spin: false },
+} as const;
+
+function formatWhen(iso: string | null): string {
+  if (!iso) return "not yet";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "not yet";
+  return date.toLocaleString();
+}
+
+function AccountSyncCard() {
+  const session = useSession();
+  const sync = useSyncState();
+  const [signingOut, setSigningOut] = useState(false);
+
+  if (!session) {
+    return (
+      <section className="pm-card space-y-2 p-4">
+        <p className="flex items-center gap-2 font-semibold">
+          <Smartphone className="size-4" /> Account & Sync
+        </p>
+        <p className="text-muted-foreground text-sm">
+          You're signed out. Everything you record stays on this device only — nothing leaves your
+          phone or computer. Sign in to keep the same goods, prices, notes and seasons on all of your
+          devices.
+        </p>
+        <Button asChild className="h-11 w-full">
+          <Link to="/auth">Sign in to sync devices</Link>
+        </Button>
+      </section>
+    );
+  }
+
+  const view = SYNC_VIEW[sync.status];
+  const Icon = view.icon;
+  const needsRetry = sync.status === "error" || sync.status === "offline" || sync.pending > 0;
+
+  return (
+    <section className="pm-card space-y-3 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-semibold">Account & Sync</p>
+          <p className="text-muted-foreground text-sm break-all">{session.user.email}</p>
+        </div>
+        <span
+          className={`pm-label border-border inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${view.tone}`}
+        >
+          <Icon className={`size-3 ${view.spin ? "animate-spin" : ""}`} />
+          {view.label}
+        </span>
+      </div>
+
+      <dl className="grid grid-cols-2 gap-2 text-sm">
+        <div>
+          <dt className="pm-label">Pending changes</dt>
+          <dd className="tabular-nums font-semibold">{sync.pending}</dd>
+        </div>
+        <div>
+          <dt className="pm-label">Last synced</dt>
+          <dd className="font-medium">{formatWhen(sync.lastSyncedAt)}</dd>
+        </div>
+      </dl>
+
+      {sync.error ? <p className="text-destructive text-sm">{sync.error}</p> : null}
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Button variant="outline" className="h-11" onClick={() => retrySync()}>
+          <RefreshCw className="size-4" /> {needsRetry ? "Retry sync" : "Sync now"}
+        </Button>
+        <Button
+          variant="outline"
+          className="h-11"
+          disabled={signingOut}
+          onClick={async () => {
+            setSigningOut(true);
+            try {
+              await signOutAndReset();
+              toast.success("Signed out — this device is local-only again");
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "Could not sign out");
+            } finally {
+              setSigningOut(false);
+            }
+          }}
+        >
+          <LogOut className="size-4" /> Sign out
+        </Button>
+      </div>
+    </section>
+  );
+}
+
 function SettingsPage() {
   const db = useDb();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -83,6 +181,9 @@ function SettingsPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+
+      <AccountSyncCard />
+
 
       <section className="pm-card space-y-2 p-4">
         <p className="font-semibold">Your data</p>
