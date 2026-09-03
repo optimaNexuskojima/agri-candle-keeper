@@ -256,10 +256,13 @@ function SettingsPage() {
       <section className="pm-card space-y-1 p-4">
         <p className="font-semibold">About AgriCandle</p>
         <p className="text-muted-foreground text-sm">
-          AgriCandle is a fully offline commodity price tracker for agricultural traders. All goods,
-          prices, notes and season profiles are stored only on this device. There is no account, no
-          server, no tracking and no paid features — everything is unlocked.
+          AgriCandle is an offline-first commodity price tracker for agricultural traders. Prices,
+          notes and season profiles are always written to this device first, so the app keeps working
+          with no connection and no account. If you sign in, your own records also sync to your
+          private cloud account over an encrypted connection — access rules make sure only you can
+          read or change your rows. No market feeds, no tracking, no paid features.
         </p>
+
       </section>
 
       <AlertDialog open={Boolean(pendingImport)} onOpenChange={(open) => !open && setPendingImport(null)}>
