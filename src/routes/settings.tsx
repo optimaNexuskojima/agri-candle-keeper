@@ -1,6 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Download, FileUp, Share, Sprout, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  CloudOff,
+  Download,
+  FileUp,
+  Loader2,
+  LogOut,
+  RefreshCw,
+  Share,
+  Smartphone,
+  Sprout,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -22,8 +35,11 @@ import {
   parseBackup,
 } from "@/lib/agri/backup";
 import { buildSampleData } from "@/lib/agri/sample";
-import { clearAll, replaceAll, useDb } from "@/lib/agri/store";
+import { clearAll, replaceAll, useDb, useSyncState } from "@/lib/agri/store";
+import { signOutAndReset, useSession } from "@/lib/agri/session";
+import { retrySync } from "@/lib/agri/sync";
 import type { AgriDatabase } from "@/lib/agri/types";
+
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
