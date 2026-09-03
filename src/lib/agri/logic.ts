@@ -117,10 +117,7 @@ export function computeGoodStats(db: AgriDatabase, good: Good): GoodStats {
   const change7d = prev7 ? changePercent(latest.close, prev7.close) : null;
 
   const raw =
-    demandScore(latest.demand) +
-    supplyTightnessScore(latest.supply) +
-    momentumScore(change3d) -
-    4;
+    demandScore(latest.demand) + supplyTightnessScore(latest.supply) + momentumScore(change3d) - 4;
   const score = Math.max(-4, Math.min(4, raw));
 
   return {

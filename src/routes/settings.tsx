@@ -1,6 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Download, FileUp, Share, Sprout, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  CloudOff,
+  Download,
+  FileUp,
+  Loader2,
+  LogOut,
+  RefreshCw,
+  Share,
+  Smartphone,
+  Sprout,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +35,9 @@ import {
   parseBackup,
 } from "@/lib/agri/backup";
 import { buildSampleData } from "@/lib/agri/sample";
-import { clearAll, replaceAll, useDb } from "@/lib/agri/store";
+import { clearAll, replaceAll, useDb, useSyncState } from "@/lib/agri/store";
+import { signOutAndReset, useSession } from "@/lib/agri/session";
+import { retrySync } from "@/lib/agri/sync";
 import type { AgriDatabase } from "@/lib/agri/types";
 
 export const Route = createFileRoute("/settings")({
@@ -43,6 +58,104 @@ export const Route = createFileRoute("/settings")({
   }),
   component: SettingsPage,
 });
+
+const SYNC_VIEW = {
+  loading: { icon: Loader2, label: "Loading", tone: "text-muted-foreground", spin: true },
+  syncing: { icon: Loader2, label: "Syncing", tone: "text-primary", spin: true },
+  synced: { icon: Check, label: "Synced", tone: "text-up", spin: false },
+  offline: { icon: CloudOff, label: "Offline", tone: "text-muted-foreground", spin: false },
+  error: { icon: AlertTriangle, label: "Sync error", tone: "text-destructive", spin: false },
+  idle: { icon: Check, label: "Ready", tone: "text-muted-foreground", spin: false },
+} as const;
+
+function formatWhen(iso: string | null): string {
+  if (!iso) return "not yet";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "not yet";
+  return date.toLocaleString();
+}
+
+function AccountSyncCard() {
+  const session = useSession();
+  const sync = useSyncState();
+  const [signingOut, setSigningOut] = useState(false);
+
+  if (!session) {
+    return (
+      <section className="pm-card space-y-2 p-4">
+        <p className="flex items-center gap-2 font-semibold">
+          <Smartphone className="size-4" /> Account & Sync
+        </p>
+        <p className="text-muted-foreground text-sm">
+          You're signed out. Everything you record stays on this device only — nothing leaves your
+          phone or computer. Sign in to keep the same goods, prices, notes and seasons on all of
+          your devices.
+        </p>
+        <Button asChild className="h-11 w-full">
+          <Link to="/auth">Sign in to sync devices</Link>
+        </Button>
+      </section>
+    );
+  }
+
+  const view = SYNC_VIEW[sync.status];
+  const Icon = view.icon;
+  const needsRetry = sync.status === "error" || sync.status === "offline" || sync.pending > 0;
+
+  return (
+    <section className="pm-card space-y-3 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-semibold">Account & Sync</p>
+          <p className="text-muted-foreground text-sm break-all">{session.user.email}</p>
+        </div>
+        <span
+          className={`pm-label border-border inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${view.tone}`}
+        >
+          <Icon className={`size-3 ${view.spin ? "animate-spin" : ""}`} />
+          {view.label}
+        </span>
+      </div>
+
+      <dl className="grid grid-cols-2 gap-2 text-sm">
+        <div>
+          <dt className="pm-label">Pending changes</dt>
+          <dd className="tabular-nums font-semibold">{sync.pending}</dd>
+        </div>
+        <div>
+          <dt className="pm-label">Last synced</dt>
+          <dd className="font-medium">{formatWhen(sync.lastSyncedAt)}</dd>
+        </div>
+      </dl>
+
+      {sync.error ? <p className="text-destructive text-sm">{sync.error}</p> : null}
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Button variant="outline" className="h-11" onClick={() => retrySync()}>
+          <RefreshCw className="size-4" /> {needsRetry ? "Retry sync" : "Sync now"}
+        </Button>
+        <Button
+          variant="outline"
+          className="h-11"
+          disabled={signingOut}
+          onClick={async () => {
+            setSigningOut(true);
+            try {
+              await signOutAndReset();
+              toast.success("Signed out — this device is local-only again");
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "Could not sign out");
+            } finally {
+              setSigningOut(false);
+            }
+          }}
+        >
+          <LogOut className="size-4" /> Sign out
+        </Button>
+      </div>
+    </section>
+  );
+}
 
 function SettingsPage() {
   const db = useDb();
@@ -67,6 +180,8 @@ function SettingsPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+
+      <AccountSyncCard />
 
       <section className="pm-card space-y-2 p-4">
         <p className="font-semibold">Your data</p>
@@ -115,11 +230,7 @@ function SettingsPage() {
         >
           <Sprout className="size-4" /> Load sample data
         </Button>
-        <Button
-          variant="destructive"
-          className="h-11 w-full"
-          onClick={() => setClearOpen(true)}
-        >
+        <Button variant="destructive" className="h-11 w-full" onClick={() => setClearOpen(true)}>
           <Trash2 className="size-4" /> Clear all data
         </Button>
       </section>
@@ -139,20 +250,25 @@ function SettingsPage() {
       <section className="pm-card space-y-1 p-4">
         <p className="font-semibold">About AgriCandle</p>
         <p className="text-muted-foreground text-sm">
-          AgriCandle is a fully offline commodity price tracker for agricultural traders. All goods,
-          prices, notes and season profiles are stored only on this device. There is no account, no
-          server, no tracking and no paid features — everything is unlocked.
+          AgriCandle is an offline-first commodity price tracker for agricultural traders. Prices,
+          notes and season profiles are always written to this device first, so the app keeps
+          working with no connection and no account. If you sign in, your own records also sync to
+          your private cloud account over an encrypted connection — access rules make sure only you
+          can read or change your rows. No market feeds, no tracking, no paid features.
         </p>
       </section>
 
-      <AlertDialog open={Boolean(pendingImport)} onOpenChange={(open) => !open && setPendingImport(null)}>
+      <AlertDialog
+        open={Boolean(pendingImport)}
+        onOpenChange={(open) => !open && setPendingImport(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Replace all current data?</AlertDialogTitle>
             <AlertDialogDescription>
               This backup has {pendingImport?.goods.length ?? 0} goods,{" "}
-              {pendingImport?.prices.length ?? 0} prices and {pendingImport?.notes.length ?? 0} notes.
-              Importing replaces everything currently on this device.
+              {pendingImport?.prices.length ?? 0} prices and {pendingImport?.notes.length ?? 0}{" "}
+              notes. Importing replaces everything currently on this device.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">

@@ -282,11 +282,19 @@ async function loadSnapshot(target: string): Promise<Snapshot> {
 /**
  * Load the cache for a scope (user id, or `local` when signed out) and expose it
  * to the UI. Nothing is ever pushed to the cloud from here; that is sync.ts.
+ *
+ * A monotonic token guards against overlapping hydrations (fast sign-in/out, or
+ * a React StrictMode double mount): only the newest call may publish a snapshot,
+ * so a slow earlier load can never overwrite the current scope's data.
  */
+let hydrationToken = 0;
+
 export async function hydrateScope(target: string): Promise<Snapshot> {
+  const token = ++hydrationToken;
   scope = target;
   setSyncState({ status: "loading", hydrated: false });
   const loaded = await loadSnapshot(target);
+  if (token !== hydrationToken) return snapshot;
   snapshot = loaded;
   view = project(loaded);
   setSyncState({
@@ -380,9 +388,7 @@ export function saveGood(input: Omit<Good, "id" | "createdAt"> & { id?: string }
 export function setGoodArchived(goodId: string, archived: boolean) {
   const at = nowISO();
   mutate((draft) => {
-    draft.goods = draft.goods.map((g) =>
-      g.id === goodId ? { ...g, archived, updatedAt: at } : g,
-    );
+    draft.goods = draft.goods.map((g) => (g.id === goodId ? { ...g, archived, updatedAt: at } : g));
     draft.dirty[dirtyKey("goods", goodId)] = true;
   });
 }

@@ -7,7 +7,8 @@ import { MONTH_NAMES, type SeasonProfile } from "@/lib/agri/types";
 import { SeasonBadge } from "@/components/agri/badges";
 
 const ROWS: Array<{
-  key: keyof Omit<SeasonProfile, "goodId" | "notes">;
+  key: keyof Omit<SeasonProfile, "goodId" | "notes" | "updatedAt" | "deletedAt">;
+
   label: string;
   active: string;
 }> = [
@@ -20,15 +21,14 @@ const ROWS: Array<{
 
 export function SeasonEditor({ goodId }: { goodId: string }) {
   const db = useDb();
-  const profile: SeasonProfile =
-    db.seasons.find((s) => s.goodId === goodId) ?? {
-      goodId,
-      plantingMonths: [],
-      growingMonths: [],
-      harvestMonths: [],
-      peakSupplyMonths: [],
-      leanMonths: [],
-    };
+  const profile: SeasonProfile = db.seasons.find((s) => s.goodId === goodId) ?? {
+    goodId,
+    plantingMonths: [],
+    growingMonths: [],
+    harvestMonths: [],
+    peakSupplyMonths: [],
+    leanMonths: [],
+  };
   const currentMonth = new Date().getMonth() + 1;
   const status = currentSeasonStatus(db.seasons.find((s) => s.goodId === goodId));
   const alerts = seasonAlerts(db.seasons.find((s) => s.goodId === goodId));

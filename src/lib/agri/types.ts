@@ -14,7 +14,6 @@ export interface SyncMeta {
   deletedAt?: string | null | undefined;
 }
 
-
 export interface Good extends SyncMeta {
   id: string;
   name: string;

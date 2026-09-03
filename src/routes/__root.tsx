@@ -12,10 +12,11 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav } from "@/components/agri/BottomNav";
+import { SyncBadge } from "@/components/agri/SyncBadge";
 import { ThemeToggle } from "@/components/agri/ThemeToggle";
 import { Toaster } from "@/components/ui/sonner";
 import { registerServiceWorker } from "@/lib/pwa";
-import { hydrateScope, LOCAL_SCOPE } from "@/lib/agri/store";
+import { initSession } from "@/lib/agri/session";
 
 function NotFoundComponent() {
   return (
@@ -134,8 +135,10 @@ function RootComponent() {
 
   useEffect(() => {
     registerServiceWorker();
-    // Load the offline cache (and migrate legacy localStorage data) on startup.
-    void hydrateScope(LOCAL_SCOPE);
+    // Hydrates the right offline cache (legacy localStorage migration included),
+    // tracks the Supabase session and starts the cloud sync engine.
+    const stop = initSession();
+    return () => stop();
   }, []);
 
   return (
@@ -147,7 +150,7 @@ function RootComponent() {
               AC
             </span>
             <span className="font-bold tracking-tight">AgriCandle</span>
-            <span className="pm-label ml-auto">Offline · On device</span>
+            <SyncBadge className="ml-auto" />
             <ThemeToggle />
           </div>
         </header>
@@ -161,4 +164,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-
