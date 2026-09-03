@@ -65,17 +65,17 @@ function goodToRow(good: Good, userId: string) {
 
 function rowToGood(row: Record<string, unknown>): Good {
   return {
-    id: row['id'] as string,
-    name: row['name'] as string,
-    category: (row['category'] as string | null) ?? undefined,
-    unit: row['unit'] as string,
-    grade: (row['grade'] as string | null) ?? undefined,
-    marketLocation: (row['market_location'] as string | null) ?? undefined,
-    currency: row['currency'] as string,
-    archived: Boolean(row['archived']),
-    createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
-    deletedAt: (row['deleted_at'] as string | null) ?? null,
+    id: row["id"] as string,
+    name: row["name"] as string,
+    category: (row["category"] as string | null) ?? undefined,
+    unit: row["unit"] as string,
+    grade: (row["grade"] as string | null) ?? undefined,
+    marketLocation: (row["market_location"] as string | null) ?? undefined,
+    currency: row["currency"] as string,
+    archived: Boolean(row["archived"]),
+    createdAt: row["created_at"] as string,
+    updatedAt: row["updated_at"] as string,
+    deletedAt: (row["deleted_at"] as string | null) ?? null,
   };
 }
 
@@ -106,21 +106,21 @@ function rowToPrice(row: Record<string, unknown>): PriceEntry {
     return value === null || value === undefined ? undefined : Number(value);
   };
   return {
-    id: row['id'] as string,
-    goodId: row['good_id'] as string,
-    date: row['date'] as string,
-    close: Number(row['close']),
+    id: row["id"] as string,
+    goodId: row["good_id"] as string,
+    date: row["date"] as string,
+    close: Number(row["close"]),
     open: num("open"),
     high: num("high"),
     low: num("low"),
-    supply: row['supply'] as PriceEntry["supply"],
-    demand: row['demand'] as PriceEntry["demand"],
-    stockLevel: (row['stock_level'] as PriceEntry["stockLevel"]) ?? undefined,
+    supply: row["supply"] as PriceEntry["supply"],
+    demand: row["demand"] as PriceEntry["demand"],
+    stockLevel: (row["stock_level"] as PriceEntry["stockLevel"]) ?? undefined,
     volumeEstimate: num("volume_estimate"),
-    source: (row['source'] as string | null) ?? undefined,
-    createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
-    deletedAt: (row['deleted_at'] as string | null) ?? null,
+    source: (row["source"] as string | null) ?? undefined,
+    createdAt: row["created_at"] as string,
+    updatedAt: row["updated_at"] as string,
+    deletedAt: (row["deleted_at"] as string | null) ?? null,
   };
 }
 
@@ -143,17 +143,17 @@ function noteToRow(note: Note, userId: string) {
 
 function rowToNote(row: Record<string, unknown>): Note {
   return {
-    id: row['id'] as string,
-    goodId: row['good_id'] as string,
-    date: row['date'] as string,
-    priceId: (row['price_id'] as string | null) ?? undefined,
-    direction: row['direction'] as Note["direction"],
-    reasonTag: row['reason_tag'] as string,
-    text: (row['text'] as string) ?? "",
-    impact: row['impact'] as Note["impact"],
-    createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
-    deletedAt: (row['deleted_at'] as string | null) ?? null,
+    id: row["id"] as string,
+    goodId: row["good_id"] as string,
+    date: row["date"] as string,
+    priceId: (row["price_id"] as string | null) ?? undefined,
+    direction: row["direction"] as Note["direction"],
+    reasonTag: row["reason_tag"] as string,
+    text: (row["text"] as string) ?? "",
+    impact: row["impact"] as Note["impact"],
+    createdAt: row["created_at"] as string,
+    updatedAt: row["updated_at"] as string,
+    deletedAt: (row["deleted_at"] as string | null) ?? null,
   };
 }
 
@@ -175,15 +175,15 @@ function seasonToRow(season: SeasonProfile, userId: string) {
 function rowToSeason(row: Record<string, unknown>): SeasonProfile {
   const months = (key: string) => ((row[key] as number[] | null) ?? []).map(Number);
   return {
-    goodId: row['good_id'] as string,
+    goodId: row["good_id"] as string,
     plantingMonths: months("planting_months"),
     growingMonths: months("growing_months"),
     harvestMonths: months("harvest_months"),
     peakSupplyMonths: months("peak_supply_months"),
     leanMonths: months("lean_months"),
-    notes: (row['notes'] as string | null) ?? undefined,
-    updatedAt: row['updated_at'] as string,
-    deletedAt: (row['deleted_at'] as string | null) ?? null,
+    notes: (row["notes"] as string | null) ?? undefined,
+    updatedAt: row["updated_at"] as string,
+    deletedAt: (row["deleted_at"] as string | null) ?? null,
   };
 }
 
@@ -293,12 +293,7 @@ async function pullKind(kind: Kind, since: string | null): Promise<Record<string
   return (data ?? []) as unknown as Record<string, unknown>[];
 }
 
-function mergeRemote<T>(
-  kind: Kind,
-  current: T[],
-  remote: T[],
-  dirty: Record<string, true>,
-): T[] {
+function mergeRemote<T>(kind: Kind, current: T[], remote: T[], dirty: Record<string, true>): T[] {
   const byId = new Map(current.map((item) => [idOf(kind, item), item]));
   for (const incoming of remote) {
     const id = idOf(kind, incoming);
@@ -358,7 +353,7 @@ export async function syncNow(): Promise<void> {
 
     const latest = [...goodRows, ...priceRows, ...noteRows, ...seasonRows].reduce<string | null>(
       (max, row) => {
-        const at = row['updated_at'] as string | undefined;
+        const at = row["updated_at"] as string | undefined;
         return at && (!max || at > max) ? at : max;
       },
       since,
