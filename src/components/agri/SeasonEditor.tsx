@@ -7,7 +7,8 @@ import { MONTH_NAMES, type SeasonProfile } from "@/lib/agri/types";
 import { SeasonBadge } from "@/components/agri/badges";
 
 const ROWS: Array<{
-  key: keyof Omit<SeasonProfile, "goodId" | "notes">;
+  key: keyof Omit<SeasonProfile, "goodId" | "notes" | "updatedAt" | "deletedAt">;
+
   label: string;
   active: string;
 }> = [
