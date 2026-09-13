@@ -134,39 +134,38 @@ function Dashboard() {
             No price moves logged yet.
           </p>
         ) : (
-          <ul className="divide-border divide-y">
+          <div className="no-scrollbar -mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1">
             {movers.map((row) => {
               const up = (row.dailyChange ?? 0) >= 0;
               return (
-                <li key={row.good.id}>
-                  <Link
-                    to="/goods/$goodId"
-                    params={{ goodId: row.good.id }}
-                    className="flex items-center gap-3 py-2.5"
-                  >
+                <Link
+                  key={row.good.id}
+                  to="/goods/$goodId"
+                  params={{ goodId: row.good.id }}
+                  className="pm-elevated flex w-40 shrink-0 snap-start flex-col gap-1.5 p-3"
+                >
+                  <div className="flex items-center gap-2">
                     <GoodIcon name={row.good.name} size="sm" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold">{row.good.name}</p>
-                      <p className="pm-label">{row.latest?.date ?? "—"}</p>
-                    </div>
-                    <span
-                      className={cn(
-                        "pm-num inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
-                        up ? "bg-success/12 text-success" : "bg-danger/12 text-danger",
-                      )}
-                    >
-                      {up ? (
-                        <ArrowUpRight className="size-3.5" />
-                      ) : (
-                        <ArrowDownRight className="size-3.5" />
-                      )}
-                      {formatPercent(row.dailyChange)}
-                    </span>
-                  </Link>
-                </li>
+                    <p className="truncate text-sm font-semibold">{row.good.name}</p>
+                  </div>
+                  <p className="pm-label">{row.latest?.date ?? "—"}</p>
+                  <span
+                    className={cn(
+                      "pm-num inline-flex items-center gap-1 self-start rounded-full px-2.5 py-1 text-xs font-semibold",
+                      up ? "bg-success/12 text-success" : "bg-danger/12 text-danger",
+                    )}
+                  >
+                    {up ? (
+                      <ArrowUpRight className="size-3.5" />
+                    ) : (
+                      <ArrowDownRight className="size-3.5" />
+                    )}
+                    {formatPercent(row.dailyChange)}
+                  </span>
+                </Link>
               );
             })}
-          </ul>
+          </div>
         )}
       </section>
 
